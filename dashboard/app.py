@@ -16,6 +16,7 @@ app = Flask(__name__)
 pasta_projeto = Path(__file__).resolve().parent.parent
 arquivo_banco = pasta_projeto / "data" / "database" / "enade.duckdb"
 porta_dashboard = int(os.environ.get("DASHBOARD_PORTA", "8050"))
+host_dashboard = os.environ.get("DASHBOARD_HOST", "127.0.0.1")
 
 AZUL_UNIFOR = "#044CF4"
 AZUL_CLARO = "#E4F1FA"
@@ -448,7 +449,7 @@ if __name__ == "__main__":
     if os.environ.get("DASHBOARD_NAO_ABRIR") != "1":
         threading.Timer(1.5, abrir_navegador).start()
     app.run(
-        host="127.0.0.1",
+        host=host_dashboard,
         port=porta_dashboard,
         debug=False,
         use_reloader=False,
