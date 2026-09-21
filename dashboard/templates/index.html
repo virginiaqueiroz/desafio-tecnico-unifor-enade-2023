@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Relatório analítico da participação da Unifor no ENADE 2023."
+    >
+    <title>Unifor no ENADE 2023 | Relatório analítico</title>
+    <link
+        rel="icon"
+        href="{{ url_for('static', filename='images/unifor-logo-horizontal.svg') }}"
+        type="image/svg+xml"
+    >
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <header class="barra">
+        <div class="container barra__conteudo">
+            <a class="marca" href="#inicio" aria-label="Ir ao início">
+                <img
+                    src="{{ url_for('static', filename='images/unifor-logo-horizontal.svg') }}"
+                    alt="Unifor"
+                >
+                <span class="marca__divisor" aria-hidden="true"></span>
+                <span class="marca__projeto">ENADE 2023</span>
+            </a>
+
+            <nav class="navegacao" aria-label="Navegação do relatório">
+                <a href="#presenca">Presença</a>
+                <a href="#modalidade">Modalidade</a>
+                <a href="#ranking">Cursos</a>
+                <a href="#benchmark">Benchmark</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="inicio">
+        {% if erro %}
+            <section class="container mensagem-erro">
+                <span class="secao__indice">Atenção</span>
+                <h1>Não foi possível carregar o dashboard</h1>
+                <p>{{ erro }}</p>
+            </section>
+        {% else %}
+            <section class="hero">
+                <div class="hero__forma hero__forma--um" aria-hidden="true"></div>
+                <div class="hero__forma hero__forma--dois" aria-hidden="true"></div>
+
+                <div class="container hero__conteudo">
+                    <div class="hero__texto">
+                        <p class="chapeu">Desafio técnico • Microdados INEP</p>
+                        <h1>A Unifor no<br><span>ENADE 2023</span></h1>
+                        <p class="hero__descricao">
+                            Um retrato objetivo da presença, do desempenho e do
+                            posicionamento da Universidade de Fortaleza nas áreas avaliadas.
+                        </p>
+                        <a class="botao" href="#presenca">
+                            Explorar resultados
+                            <span aria-hidden="true">↓</span>
+                        </a>
+                    </div>
+
+                    <aside class="hero__resposta" aria-label="Resposta principal">
+                        <span class="hero__selo">Pergunta 1</span>
+                        <p>A Unifor está no ENADE 2023?</p>
+                        <strong>Sim.</strong>
+                        <div class="hero__resposta-detalhe">
+                            <span>Identificada pelo código</span>
+                            <b>CO_IES {{ dados.resumo.codigo_ies }}</b>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <section class="resumo container" aria-label="Indicadores principais">
+                <article class="kpi kpi--principal">
+                    <span class="kpi__rotulo">Nota geral média</span>
+                    <strong>{{ numero_pt(dados.resumo.nota_media, 2) }}</strong>
+                    <small>Ponderada pela quantidade de avaliados</small>
+                </article>
+                <article class="kpi">
+                    <span class="kpi__icone" aria-hidden="true">01</span>
+                    <span class="kpi__rotulo">Cursos avaliados</span>
+                    <strong>{{ dados.resumo.quantidade_cursos }}</strong>
+                    <small>Um curso por área no recorte</small>
+                </article>
+                <article class="kpi">
+                    <span class="kpi__icone" aria-hidden="true">02</span>
+                    <span class="kpi__rotulo">Áreas avaliadas</span>
+                    <strong>{{ dados.resumo.quantidade_areas }}</strong>
+                    <small>Grupos de enquadramento distintos</small>
+                </article>
+                <article class="kpi">
+                    <span class="kpi__icone" aria-hidden="true">03</span>
+                    <span class="kpi__rotulo">Estudantes avaliados</span>
+                    <strong>{{ numero_pt(dados.resumo.quantidade_avaliados) }}</strong>
+                    <small>Presentes e com nota válida</small>
+                </article>
+            </section>
+
+            <section id="presenca" class="secao container">
+                <div class="secao__cabecalho">
+                    <div>
+                        <span class="secao__indice">01 — Presença no exame</span>
+                        <h2>Onde a Unifor aparece no ENADE 2023</h2>
+                    </div>
+                    <p>
+                        A instituição foi localizada pelo <b>CO_IES 555</b>.
+                        A tabela detalha os 17 cursos, suas áreas, notas e bases de alunos.
+                    </p>
+                </div>
+
+                <div class="tabela-card">
+                    <div class="tabela-cabecalho">
+                        <div>
+                            <span class="tabela-cabecalho__tag">Camada Gold</span>
+                            <h3>Mapa de cursos e áreas avaliadas</h3>
+                        </div>
+                        <span class="tabela-cabecalho__contagem">
+                            {{ dados.areas|length }} registros
+                        </span>
+                    </div>
+
+                    <div class="tabela-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Curso</th>
+                                    <th>Área avaliada</th>
+                                    <th>Modalidade</th>
+                                    <th class="numero">Avaliados</th>
+                                    <th class="numero">Nota média</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for linha in dados.areas %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ linha.NO_CURSO }}</strong>
+                                            <small>CO_CURSO {{ linha.CO_CURSO }}</small>
+                                        </td>
+                                        <td>{{ linha.NO_GRUPO }}</td>
+                                        <td><span class="pill">{{ linha.DS_MODALIDADE }}</span></td>
+                                        <td class="numero">{{ numero_pt(linha.QT_AVALIADOS) }}</td>
+                                        <td class="numero nota">{{ numero_pt(linha.NT_GER_MEDIA, 2) }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="modalidade" class="secao secao--azul">
+                <div class="container">
+                    <div class="secao__cabecalho secao__cabecalho--claro">
+                        <div>
+                            <span class="secao__indice">02 — Modalidade</span>
+                            <h2>Presencial x EaD: há diferença de nota?</h2>
+                        </div>
+                        <p>
+                            No Brasil, sim — e por uma margem relevante. Dentro da
+                            própria Unifor, o ENADE 2023 não permite responder.
+                        </p>
+                    </div>
+
+                    <div class="benchmark-grid nacional-resposta">
+                        <article class="grafico-card">
+                            {{ graficos.nacional_modalidade }}
+                        </article>
+                        <aside class="nacional-resposta__texto">
+                            <span class="hero__selo">Resposta nacional · todas as IES</span>
+                            {% if dados.diferenca_nacional is not none %}
+                                <div class="gap">
+                                    <strong>+{{ numero_pt(dados.diferenca_nacional, 2) }}</strong>
+                                    <span>
+                                        pontos separam Presencial de EaD, a favor do
+                                        Presencial (nota ponderada por aluno avaliado)
+                                    </span>
+                                </div>
+                            {% endif %}
+                            <ul>
+                                {% for item in dados.nacional_modalidades %}
+                                    <li>
+                                        <b>{{ item.nome }}:</b>
+                                        {{ numero_pt(item.nota_media, 2) }}
+                                        ({{ numero_pt(item.quantidade_cursos) }} cursos,
+                                        {{ numero_pt(item.quantidade_avaliados) }} avaliados)
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+                    </div>
+
+                    <div class="secao__divisor-rotulo">Recorte Unifor</div>
+
+                    <div class="modalidades">
+                        {% for modalidade in dados.modalidades %}
+                            <article class="modalidade">
+                                <div class="modalidade__topo">
+                                    <span>{{ modalidade.nome }}</span>
+                                    {% if modalidade.quantidade_cursos > 0 %}
+                                        <span class="status status--ok">Com dados</span>
+                                    {% else %}
+                                        <span class="status">Sem dados</span>
+                                    {% endif %}
+                                </div>
+                                <strong>
+                                    {% if modalidade.nota_media is not none %}
+                                        {{ numero_pt(modalidade.nota_media, 2) }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </strong>
+                                <p>Nota geral média</p>
+                                <dl>
+                                    <div>
+                                        <dt>Cursos</dt>
+                                        <dd>{{ modalidade.quantidade_cursos }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Avaliados</dt>
+                                        <dd>{{ numero_pt(modalidade.quantidade_avaliados) }}</dd>
+                                    </div>
+                                </dl>
+                            </article>
+                        {% endfor %}
+
+                        <article class="conclusao">
+                            <span class="conclusao__icone" aria-hidden="true">!</span>
+                            <div>
+                                <span class="conclusao__rotulo">Conclusão analítica</span>
+                                {% if dados.comparacao_modalidade_disponivel %}
+                                    <h3>As duas modalidades possuem base válida para comparação.</h3>
+                                {% else %}
+                                    <h3>Não é possível afirmar que existe diferença de desempenho.</h3>
+                                    <p>
+                                        No ENADE 2023, todos os 17 cursos encontrados para a
+                                        Unifor são presenciais. Sem observações EaD, qualquer
+                                        comparação seria estatisticamente indevida.
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </article>
+                    </div>
+
+                    <p class="censo-nota">
+                        <b>A Unifor tem oferta EaD</b> — o Censo da Educação Superior
+                        2023 registra {{ dados.censo_modalidades.ead }} cursos EaD e
+                        {{ dados.censo_modalidades.presencial }} presenciais no total
+                        da instituição. Nenhum curso EaD caiu no ciclo de avaliação
+                        do ENADE 2023, por isso essa comparação interna não pode ser
+                        respondida apenas com este recorte.
+                    </p>
+                </div>
+            </section>
+
+            <section id="ranking" class="secao container">
+                <div class="secao__cabecalho">
+                    <div>
+                        <span class="secao__indice">03 — Desempenho por curso</span>
+                        <h2>Os 10 cursos com maior nota média</h2>
+                    </div>
+                    <p>
+                        Ranking calculado pela média de <b>NT_GER</b> dos estudantes
+                        presentes com resultado válido, agregado no nível do curso.
+                    </p>
+                </div>
+
+                <div class="grade-ranking">
+                    <article class="grafico-card">
+                        {{ graficos.top_10 }}
+                    </article>
+
+                    <aside class="destaque-curso">
+                        <span class="destaque-curso__posicao">1º lugar</span>
+                        <p>O maior destaque da Unifor é</p>
+                        <h3>{{ dados.destaque.nome_curso }}</h3>
+                        <strong>{{ numero_pt(dados.destaque.nota_media, 2) }}</strong>
+                        <span>pontos de nota média</span>
+                        <div class="destaque-curso__rodape">
+                            <div>
+                                <b>+{{ numero_pt(dados.destaque.acima_media_unifor, 2) }}</b>
+                                <span>pontos acima da média institucional</span>
+                            </div>
+                            <div>
+                                <b>{{ numero_pt(dados.destaque.quantidade_avaliados) }}</b>
+                                <span>estudantes avaliados</span>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+
+                <p class="nota-metodologica">
+                    <b>Leitura recomendada:</b> a nota evidencia desempenho relativo,
+                    mas deve ser interpretada junto ao número de avaliados. Cursos com
+                    bases menores podem apresentar maior variação.
+                </p>
+            </section>
+
+            {% if dados.benchmark %}
+                <section id="benchmark" class="secao secao--cinza">
+                    <div class="container">
+                        <div class="secao__cabecalho">
+                            <div>
+                                <span class="secao__indice">04 — Curiosidade opcional</span>
+                                <h2>Quão perto a Unifor está da melhor IES comparável?</h2>
+                            </div>
+                            <p>
+                                Para evitar comparar instituições com atuação muito diferente,
+                                entram apenas IES presentes em pelo menos 16 das 17 áreas da Unifor.
+                            </p>
+                        </div>
+
+                        <div class="benchmark-grid">
+                            <article class="grafico-card grafico-card--compacto">
+                                {{ graficos.benchmark }}
+                            </article>
+
+                            <article class="benchmark-resposta">
+                                <span class="benchmark-resposta__rotulo">Melhor comparável</span>
+                                <h3>{{ dados.benchmark.nome_ies }}</h3>
+                                <p class="benchmark-resposta__sigla">
+                                    {{ dados.benchmark.sigla_ies }} • CO_IES {{ dados.benchmark.codigo_ies }}
+                                </p>
+
+                                <div class="gap">
+                                    <strong>{{ numero_pt(dados.benchmark.diferenca, 2) }}</strong>
+                                    <span>pontos separam a Unifor da líder comparável</span>
+                                </div>
+
+                                <ul>
+                                    <li>
+                                        {{ dados.benchmark.sigla_ies }} cobre
+                                        {{ dados.benchmark.areas_cobertas }} das 17 áreas.
+                                    </li>
+                                    <li>
+                                        A Unifor ocupa a {{ dados.benchmark.posicao_unifor }}ª posição
+                                        entre {{ dados.benchmark.total_comparaveis }} IES comparáveis.
+                                    </li>
+                                    <li>
+                                        A média é ponderada por estudante avaliado, reduzindo a
+                                        distorção causada por cursos de tamanhos diferentes.
+                                    </li>
+                                </ul>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="metodo container">
+                <div>
+                    <span class="secao__indice">Como ler este relatório</span>
+                    <h2>Da fonte oficial à decisão</h2>
+                </div>
+                <div class="metodo__itens">
+                    <article>
+                        <span>01</span>
+                        <h3>Fonte</h3>
+                        <p>Microdados do ENADE 2023 disponibilizados pelo INEP.</p>
+                    </article>
+                    <article>
+                        <span>02</span>
+                        <h3>Recorte</h3>
+                        <p>Estudantes presentes (TP_PRES = 555) e com NT_GER válida.</p>
+                    </article>
+                    <article>
+                        <span>03</span>
+                        <h3>Métrica</h3>
+                        <p>Médias institucionais ponderadas pela quantidade de avaliados.</p>
+                    </article>
+                    <article>
+                        <span>04</span>
+                        <h3>Arquitetura</h3>
+                        <p>Consultas feitas exclusivamente nas tabelas da camada Gold.</p>
+                    </article>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+
+    <footer>
+        <div class="container rodape">
+            <div>
+                <img
+                    src="{{ url_for('static', filename='images/unifor-logo-horizontal.svg') }}"
+                    alt="Unifor"
+                >
+                <p>Desafio técnico — análise independente dos Microdados ENADE 2023.</p>
+            </div>
+            <p>
+                Identidade visual aplicada a partir dos ativos públicos da
+                Central de Marca Unifor.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
