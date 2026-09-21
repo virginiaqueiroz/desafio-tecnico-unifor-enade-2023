@@ -165,8 +165,8 @@
                             <h2>Presencial x EaD: há diferença de nota?</h2>
                         </div>
                         <p>
-                            No Brasil, sim — e por uma margem relevante. Dentro da
-                            própria Unifor, o ENADE 2023 não permite responder.
+                            No Brasil, sim — e por uma margem relevante. Na Unifor,
+                            todos os cursos avaliados em 2023 são Presenciais.
                         </p>
                     </div>
 
@@ -239,11 +239,11 @@
                                 {% if dados.comparacao_modalidade_disponivel %}
                                     <h3>As duas modalidades possuem base válida para comparação.</h3>
                                 {% else %}
-                                    <h3>Não é possível afirmar que existe diferença de desempenho.</h3>
+                                    <h3>Em 2023, a Unifor só teve cursos Presenciais avaliados.</h3>
                                     <p>
-                                        No ENADE 2023, todos os 17 cursos encontrados para a
-                                        Unifor são presenciais. Sem observações EaD, qualquer
-                                        comparação seria estatisticamente indevida.
+                                        Os 17 cursos da Unifor no ENADE 2023 são todos
+                                        presenciais — não há curso EaD neste ciclo, logo não
+                                        existe uma nota EaD da instituição para comparar.
                                     </p>
                                 {% endif %}
                             </div>
@@ -254,9 +254,8 @@
                         <b>A Unifor tem oferta EaD</b> — o Censo da Educação Superior
                         2023 registra {{ dados.censo_modalidades.ead }} cursos EaD e
                         {{ dados.censo_modalidades.presencial }} presenciais no total
-                        da instituição. Nenhum curso EaD caiu no ciclo de avaliação
-                        do ENADE 2023, por isso essa comparação interna não pode ser
-                        respondida apenas com este recorte.
+                        da instituição. Esses cursos simplesmente não caíram no ciclo
+                        de avaliação do ENADE 2023, por isso não aparecem neste recorte.
                     </p>
                 </div>
             </section>
