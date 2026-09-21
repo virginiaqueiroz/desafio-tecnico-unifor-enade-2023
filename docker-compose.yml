@@ -1,0 +1,18 @@
+services:
+  dashboard:
+    build: .
+    container_name: enade-dashboard
+    ports:
+      - "8050:8050"
+    volumes:
+      # Persiste os microdados baixados e o banco DuckDB gerado pelo pipeline
+      # entre reinicializações, evitando baixar ~2 arquivos grandes do INEP
+      # e reprocessar tudo a cada "docker compose up".
+      - ./data:/app/data
+      # Guarda os notebooks executados (saída do run_pipeline.py) para consulta.
+      - ./artifacts:/app/artifacts
+    environment:
+      - DASHBOARD_NAO_ABRIR=1
+      - DASHBOARD_HOST=0.0.0.0
+      - DASHBOARD_PORTA=8050
+    restart: unless-stopped

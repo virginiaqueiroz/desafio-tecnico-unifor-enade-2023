@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Garante LF (não CRLF) em scripts de shell, independente do core.autocrlf
+# do Windows -- um CRLF aqui quebra o entrypoint dentro do container Linux.
+*.sh text eol=lf

@@ -1,0 +1,30 @@
+# Ambiente virtual local (o container instala as dependências na imagem)
+.venv/
+
+# Controle de versão
+.git/
+.gitignore
+.gitattributes
+
+# Artefatos do Jupyter e do Python
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Saídas geradas pela pipeline (recriadas ou montadas via volume)
+artifacts/
+
+# Dados brutos e banco DuckDB (montados via volume, não fazem parte da imagem)
+data/raw/
+data/database/
+*.duckdb
+*.duckdb.wal
+
+# Scripts Windows (não são usados dentro do container Linux)
+*.bat
+
+# Diversos
+.env
+README.md
