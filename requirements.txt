@@ -4,7 +4,7 @@ duckdb
 jupyter
 nbconvert
 ipykernel
-streamlit
 plotly
 requests
 curl_cffi
+flask
