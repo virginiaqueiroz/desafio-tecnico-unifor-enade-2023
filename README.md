@@ -43,6 +43,8 @@ http://localhost:8050
 
 Para encerrar, `Ctrl + C` no terminal ou `docker compose down`.
 
+> **Testado com execução limpa (clean run).** Antes da entrega, essa opção foi validada de ponta a ponta simulando exatamente o ambiente de quem for avaliar: com a pasta `data/` removida (sem `enade.duckdb` nem microdados baixados), `docker compose up --build` reconstruiu a imagem do zero, baixou os microdados do INEP, executou os dois notebooks e subiu o dashboard com sucesso, sem nenhuma dependência pré-instalada além do Docker.
+
 ### Opção 2 — Windows, com arquivos `.bat`
 
 #### 1. Baixar o projeto
