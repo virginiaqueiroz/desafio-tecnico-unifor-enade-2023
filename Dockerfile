@@ -3,9 +3,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Dependências de sistema mínimas (build de wheels nativos usados por algumas libs)
+# Dependências de sistema:
+# - build-essential: compila wheels nativos usados por algumas libs Python
+# - curl: o notebook "1. Download Microdados ENADE.ipynb" chama o comando
+#   `curl` diretamente (via subprocess) para baixar os microdados do INEP.
+#   No Windows o curl já vem instalado por padrão; na imagem slim do Docker
+#   precisa ser instalado explicitamente.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Instala as dependências Python primeiro (aproveita cache do Docker em rebuilds)
